@@ -1,19 +1,19 @@
-import mongoose from "mongoose";
-import app from "./app.js";
+const connectToMongo = require('./db');
+const express = require('express')
+var cors = require('cors') 
 
-(async()=>{
+connectToMongo();
+const app = express()
+const port = 5000
 
-try{
- await mongoose.connect("mongodb://localhost:27017/giysetup")
-   console.log("DB CONNECTED");
+app.use(cors())
+app.use(express.json())
 
-   const onListening=()=>{
-    console.log("listening on port 5000");
-   }
-   app.listen(5000, onListening)
-}catch(error){
-  console.error("error: ",error);
-  throw error;
-}
+// Available Routes
+app.use('/api/auth', require('./routes/auth'))
+app.use('/api/notes', require('./routes/notes'))
 
-})()
+
+app.listen(port, () => {
+  console.log(`iNotebook backend listening at http://localhost:${port}`)
+})
